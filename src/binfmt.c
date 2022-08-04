@@ -54,6 +54,7 @@
 #include "debug.h"
 // Not needed when runnign on kernel mode 
 #include <linux/version.h>
+#include <utopia/thread_status.h>
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5,11,0)
 #	define check_64bit_mode(regs) !test_thread_flag(TIF_IA32)
@@ -96,7 +97,7 @@ struct linux_binfmt macho_format = {
 	.module = THIS_MODULE,
 	.load_binary = macho_load,
 	.load_shlib = NULL,
-#ifdef CONFIG_COREDUMP_FAKE
+#ifdef CONFIG_COREDUMP
 	.core_dump = macho_coredump,
 #endif
 	.min_coredump = PAGE_SIZE
@@ -500,7 +501,7 @@ void start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_
 // CORE DUMPING SUPPORT                                                     //
 //////////////////////////////////////////////////////////////////////////////
 
-#ifdef CONFIG_COREDUMP_FAKE
+#ifdef CONFIG_COREDUMP
 
 // Copied and adapted from mm/gup.c from get_dump_page() (not exported for LKMs)
 static
@@ -870,4 +871,4 @@ fail:
 
 core_initcall(macho_binfmt_init);
 module_exit(macho_binfmt_exit);
-MODULE_LICENSE("GPL");
+MODULE_LICENSE("GPL");	
